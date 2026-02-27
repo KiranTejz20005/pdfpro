@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aadhar Card Cutter — DocPrint Pro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  </style>
+</head>
+<body class="bg-black text-white min-h-screen">
+  <!-- Header -->
+  <header class="bg-[#0A0A0A] border-b border-[#262626] px-8 py-4">
+    <div class="flex items-center gap-4">
+      <a href="../index.html" class="text-[#2563EB] hover:text-blue-400 transition">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </a>
+      <div>
+        <h1 class="text-xl font-semibold">Aadhar Card Cutter</h1>
+        <p class="text-sm text-gray-500">Crop and prepare Aadhar card for printing</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto p-8">
+    <div class="bg-[#121212] border border-[#262626] rounded-lg p-8">
+      
+      <!-- Upload Zone -->
+      <div id="uploadZone" class="border-2 border-dashed border-[#262626] rounded-lg p-12 text-center cursor-pointer hover:border-[#2563EB] transition mb-6">
+        <span class="material-symbols-outlined text-6xl text-[#2563EB] mb-4 block">upload_file</span>
+        <p class="text-lg mb-2">Click to upload or drag and drop</p>
+        <p class="text-sm text-gray-500">Accepted: PDF files only</p>
+      </div>
+      <input type="file" id="fileInput" accept=".pdf" class="hidden">
+
+      <!-- File Info -->
+      <div id="fileInfo" class="bg-[#0A0A0A] border border-[#262626] rounded-lg p-4 mb-6 hidden">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-[#2563EB]">description</span>
+          <div class="flex-1">
+            <p class="font-medium" id="fileName"></p>
+            <p class="text-sm text-gray-500" id="fileSize"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Options Section -->
+      <div id="optionsSection" class="space-y-6 mb-6 hidden">
+        
+        <!-- Layout Selection -->
+        <div>
+          <label class="block text-sm font-semibold mb-3">Print Layout</label>
+          <div class="grid grid-cols-3 gap-4">
+            <div class="layout-card border-2 border-[#2563EB] bg-[#2563EB]/10 rounded-lg p-4 cursor-pointer transition hover:bg-[#2563EB]/20" data-layout="standard" onclick="selectLayout('standard')">
+              <div class="text-center">
+                <p class="font-semibold mb-1">STANDARD</p>
+                <p class="text-xs text-gray-400">2 cards on A4</p>
+              </div>
+            </div>
+            <div class="layout-card border-2 border-[#262626] rounded-lg p-4 cursor-pointer transition hover:border-[#2563EB]" data-layout="wallet" onclick="selectLayout('wallet')">
+              <div class="text-center">
+                <p class="font-semibold mb-1">WALLET</p>
+                <p class="text-xs text-gray-400">4 cards on A4</p>
+              </div>
+            </div>
+            <div class="layout-card border-2 border-[#262626] rounded-lg p-4 cursor-pointer transition hover:border-[#2563EB]" data-layout="individual" onclick="selectLayout('individual')">
+              <div class="text-center">
+                <p class="font-semibold mb-1">INDIVIDUAL</p>
+                <p class="text-xs text-gray-400">single card</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DPI Selection -->
+        <div>
+          <label class="block text-sm font-semibold mb-3">DPI Quality</label>
+          <div class="space-y-2">
+            <label class="flex items-center gap-3 p-3 bg-[#0A0A0A] border border-[#262626] rounded-lg cursor-pointer hover:border-[#2563EB] transition">
+              <input type="radio" id="dpi150" name="dpi" value="150" class="w-4 h-4 text-[#2563EB]">
+              <span>150 DPI — Draft Quality</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 bg-[#0A0A0A] border border-[#262626] rounded-lg cursor-pointer hover:border-[#2563EB] transition">
+              <input type="radio" id="dpi200" name="dpi" value="200" checked class="w-4 h-4 text-[#2563EB]">
+              <span>200 DPI — Standard Quality</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 bg-[#0A0A0A] border border-[#262626] rounded-lg cursor-pointer hover:border-[#2563EB] transition">
+              <input type="radio" id="dpi300" name="dpi" value="300" class="w-4 h-4 text-[#2563EB]">
+              <span>300 DPI — High Quality Print</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Cut Marks -->
+        <div>
+          <label class="flex items-center gap-3 p-3 bg-[#0A0A0A] border border-[#262626] rounded-lg cursor-pointer">
+            <input type="checkbox" id="cutMarksCheck" checked class="w-4 h-4 text-[#2563EB]">
+            <span class="text-sm font-medium">Add cut marks for easy trimming</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Generate Button -->
+      <button id="cropBtn" class="w-full bg-[#2563EB] hover:bg-blue-600 text-white font-semibold py-4 rounded-lg transition disabled:bg-gray-700 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined">content_cut</span>
+        Crop & Prepare for Print
+      </button>
+
+      <!-- Status Area -->
+      <div id="statusArea" class="mt-6 text-center hidden">
+        <div class="inline-block w-12 h-12 border-4 border-[#2563EB] border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p class="text-gray-400">Processing... please wait</p>
+      </div>
+
+      <!-- Result Box -->
+      <div id="resultBox" class="mt-6 bg-green-900/20 border-2 border-green-500 rounded-lg p-6 text-center hidden">
+        <span class="material-symbols-outlined text-5xl text-green-500 mb-4 block">check_circle</span>
+        <h3 class="text-xl font-semibold text-green-500 mb-4">Success!</h3>
+        <a id="downloadBtn" download class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg transition mb-4">
+          <span class="material-symbols-outlined">download</span>
+          Download Print-Ready PDF
+        </a>
+        <div class="bg-[#0A0A0A] border border-[#262626] rounded-lg p-4 text-left text-sm">
+          <p class="text-gray-300"><span class="material-symbols-outlined text-base align-middle mr-2">info</span><strong>Print Tip:</strong> Open the downloaded PDF and print at 100% scale (no scaling). Set paper size to A4.</p>
+        </div>
+        <button onclick="resetForm()" class="mt-4 text-[#2563EB] hover:underline text-sm">Process Another Card</button>
+      </div>
+
+      <!-- Error Box -->
+      <div id="errorBox" class="mt-6 bg-red-900/20 border-2 border-red-500 rounded-lg p-6 text-center hidden">
+        <span class="material-symbols-outlined text-5xl text-red-500 mb-4 block">error</span>
+        <h3 class="text-xl font-semibold text-red-500 mb-2">Error</h3>
+        <p id="errorText" class="text-red-400 mb-4"></p>
+        <button onclick="resetForm()" class="text-[#2563EB] hover:underline text-sm">Try Again</button>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    const API = 'http://localhost:8000';
+    let selectedLayout = 'standard';
+    const uploadZone = document.getElementById('uploadZone');
+    const fileInput = document.getElementById('fileInput');
+    const fileInfo = document.getElementById('fileInfo');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const optionsSection = document.getElementById('optionsSection');
+    const cutMarksCheck = document.getElementById('cutMarksCheck');
+    const cropBtn = document.getElementById('cropBtn');
+    const statusArea = document.getElementById('statusArea');
+    const resultBox = document.getElementById('resultBox');
+    const errorBox = document.getElementById('errorBox');
+    const errorText = document.getElementById('errorText');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    function selectLayout(layout) {
+      selectedLayout = layout;
+      document.querySelectorAll('.layout-card').forEach(c => {
+        c.className = 'layout-card border-2 border-[#262626] rounded-lg p-4 cursor-pointer transition hover:border-[#2563EB]';
+      });
+      const selected = document.querySelector(`[data-layout="${layout}"]`);
+      selected.className = 'layout-card border-2 border-[#2563EB] bg-[#2563EB]/10 rounded-lg p-4 cursor-pointer transition hover:bg-[#2563EB]/20';
+    }
+
+    uploadZone.addEventListener('click', () => fileInput.click());
+    uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('border-[#2563EB]'); });
+    uploadZone.addEventListener('dragleave', () => { uploadZone.classList.remove('border-[#2563EB]'); });
+    uploadZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadZone.classList.remove('border-[#2563EB]');
+      if (e.dataTransfer.files.length) { fileInput.files = e.dataTransfer.files; handleFileSelect(); }
+    });
+    fileInput.addEventListener('change', handleFileSelect);
+
+    function handleFileSelect() {
+      const file = fileInput.files[0];
+      if (file) {
+        fileName.textContent = file.name;
+        fileSize.textContent = formatFileSize(file.size);
+        fileInfo.classList.remove('hidden');
+        optionsSection.classList.remove('hidden');
+      }
+    }
+
+    function formatFileSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    function showStatus() {
+      statusArea.classList.remove('hidden');
+      resultBox.classList.add('hidden');
+      errorBox.classList.add('hidden');
+      cropBtn.disabled = true;
+    }
+
+    function showResult(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      downloadBtn.href = url;
+      downloadBtn.download = filename;
+      statusArea.classList.add('hidden');
+      resultBox.classList.remove('hidden');
+      cropBtn.disabled = false;
+    }
+
+    function showError(msg) {
+      errorText.textContent = msg;
+      statusArea.classList.add('hidden');
+      errorBox.classList.remove('hidden');
+      cropBtn.disabled = false;
+    }
+
+    function resetForm() {
+      fileInput.value = '';
+      fileInfo.classList.add('hidden');
+      optionsSection.classList.add('hidden');
+      statusArea.classList.add('hidden');
+      resultBox.classList.add('hidden');
+      errorBox.classList.add('hidden');
+      cropBtn.disabled = false;
+    }
+
+    async function submitForm(endpoint, formData, outputFilename) {
+      showStatus();
+      try {
+        const res = await fetch(API + endpoint, { method: 'POST', body: formData });
+        if (!res.ok) {
+          const err = await res.json();
+          showError(err.detail || 'Something went wrong');
+          return;
+        }
+        const blob = await res.blob();
+        const contentDisposition = res.headers.get('content-disposition');
+        const filename = contentDisposition?.split('filename=')[1]?.replace(/"/g, '') || outputFilename;
+        showResult(blob, filename);
+      } catch(e) {
+        showError('Cannot connect to backend. Make sure server is running at ' + API);
+      }
+    }
+
+    cropBtn.addEventListener('click', async () => {
+      const file = fileInput.files[0];
+      if (!file) { showError('Please select a PDF file'); return; }
+      if (!file.name.endsWith('.pdf')) { showError('Only PDF files accepted'); return; }
+      
+      const selectedDpi = document.querySelector('input[name="dpi"]:checked').value;
+      
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('layout', selectedLayout);
+      fd.append('dpi', selectedDpi);
+      fd.append('cut_marks', cutMarksCheck.checked);
+      await submitForm('/api/cards/aadhar-cut', fd, 'aadhar_print.pdf');
+    });
+  </script>
+</body>
+</html>

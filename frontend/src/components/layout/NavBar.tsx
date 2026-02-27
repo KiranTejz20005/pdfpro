@@ -9,9 +9,9 @@ export default function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
-    <nav className="nav">
-      <Link to="/" className="nav-logo">
-        DocPrint Pro
+    <nav className="nav" style={{ boxShadow: '0 1px 0 rgba(38, 38, 38, 0.5)' }}>
+      <Link to="/" className="nav-logo" style={{ fontSize: '1.25rem', fontWeight: 700 }}>
+        📄 DocPrint Pro
       </Link>
       <button
         type="button"

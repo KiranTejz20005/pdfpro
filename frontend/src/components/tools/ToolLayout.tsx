@@ -49,11 +49,13 @@ export default function ToolLayout({
 
   return (
     <div className="container">
-      <div className="card" style={{ maxWidth: 640, margin: '0 auto' }}>
-        <h1 style={{ fontSize: '1.5rem', marginBottom: 8 }}>{config.title}</h1>
-        <p className="card-description" style={{ marginBottom: 24 }}>
-          {config.description}
-        </p>
+      <div className="card" style={{ maxWidth: 720, margin: '0 auto', boxShadow: 'var(--shadow-lg)' }}>
+        <div style={{ marginBottom: 28 }}>
+          <h1 style={{ fontSize: '1.875rem', marginBottom: 10, fontWeight: 700, color: 'var(--color-text)', letterSpacing: '-0.01em' }}>{config.title}</h1>
+          <p className="card-description" style={{ marginBottom: 0, fontSize: '0.95rem', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
+            {config.description}
+          </p>
+        </div>
 
         <UploadZone
           accept={config.accept}
@@ -62,19 +64,31 @@ export default function ToolLayout({
           formatsText={formats}
         />
 
-        <FileList files={files} onRemove={onRemoveFile} />
+        {files.length > 0 && (
+          <>
+            <FileList files={files} onRemove={onRemoveFile} />
 
-        {optionsSlot && <div style={{ marginTop: 20 }}>{optionsSlot}</div>}
+            {optionsSlot && <div style={{ marginTop: 20 }}>{optionsSlot}</div>}
 
-        <Button
-          variant="primary"
-          block
-          disabled={!canSubmit}
-          onClick={onSubmit}
-          style={{ marginTop: 24 }}
-        >
-          {config.primaryActionLabel}
-        </Button>
+            <Button
+              variant="primary"
+              block
+              disabled={!canSubmit}
+              onClick={onSubmit}
+              style={{ 
+                marginTop: 24,
+                padding: '14px 24px',
+                fontSize: '1rem',
+                fontWeight: 600,
+                borderRadius: '0.5rem',
+                boxShadow: canSubmit ? '0 0 20px rgba(37, 99, 235, 0.3)' : 'none',
+                transition: 'all 0.2s',
+              }}
+            >
+              {config.primaryActionLabel}
+            </Button>
+          </>
+        )}
 
         <StatusArea show={status === 'loading'} message={statusMessage} />
 

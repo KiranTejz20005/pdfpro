@@ -27,24 +27,21 @@ export default function HomePage() {
   return (
     <div className="container">
       {/* Hero */}
-      <section className="hero" style={{ marginBottom: 48, textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2.25rem', marginBottom: 12, color: 'var(--color-text)' }}>
+      <section className="hero" style={{ marginBottom: 48, textAlign: 'center', padding: '60px 0 40px' }}>
+        <h1 style={{ fontSize: '2.75rem', marginBottom: 16, color: 'var(--color-text)', fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.02em' }}>
           Every document and image tool in one place
         </h1>
-        <p style={{ fontSize: 18, color: 'var(--color-text-muted)', maxWidth: 560, margin: '0 auto 24px' }}>
+        <p style={{ fontSize: '1.125rem', color: 'var(--color-text-muted)', maxWidth: 640, margin: '0 auto 32px', lineHeight: 1.6 }}>
           Merge, convert, compress, and edit PDFs. Process ID cards. All tools are free and easy to use.
         </p>
-        <div style={{ maxWidth: 400, margin: '0 auto' }}>
-          <GlobalSearch recentToolIds={recentIds} />
-        </div>
       </section>
 
       {/* Quick actions */}
-      <section style={{ marginBottom: 48 }}>
-        <h2 style={{ fontSize: '1.25rem', marginBottom: 16, color: 'var(--color-text)' }}>Quick actions</h2>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+      <section style={{ marginBottom: 56 }}>
+        <h2 style={{ fontSize: '1.25rem', marginBottom: 20, color: 'var(--color-text)', fontWeight: 600, letterSpacing: '-0.01em' }}>Quick Actions</h2>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
           {quickTools.map((t) => (
-            <Link key={t.id} to={`/tools/${t.id}`} className="chip">
+            <Link key={t.id} to={`/tools/${t.id}`} className="chip" style={{ padding: '10px 18px', fontSize: '0.9rem', fontWeight: 500 }}>
               {t.title}
             </Link>
           ))}
@@ -52,27 +49,28 @@ export default function HomePage() {
       </section>
 
       {/* Category shortcuts */}
-      <section style={{ marginBottom: 48 }}>
-        <h2 style={{ fontSize: '1.25rem', marginBottom: 16, color: 'var(--color-text)' }}>Categories</h2>
-        <div className="tools-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))' }}>
+      <section style={{ marginBottom: 56 }}>
+        <h2 style={{ fontSize: '1.25rem', marginBottom: 20, color: 'var(--color-text)', fontWeight: 600, letterSpacing: '-0.01em' }}>Categories</h2>
+        <div className="tools-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 16 }}>
           {CATEGORY_IDS.map((id) => (
             <Link
               key={id}
               to={`/category/${id}`}
               className="card"
-              style={{ padding: 20, textAlign: 'center', textDecoration: 'none', color: 'inherit' }}
+              style={{ padding: 28, textAlign: 'center', textDecoration: 'none', color: 'inherit', transition: 'all 0.2s' }}
             >
-              <div style={{ fontWeight: 600, marginBottom: 4 }}>{CATEGORY_LABELS[id]}</div>
-              <div style={{ fontSize: 13, color: 'var(--color-text-muted)' }}>View all tools</div>
+              <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>📁</div>
+              <div style={{ fontWeight: 600, marginBottom: 6, fontSize: '1.05rem', color: 'var(--color-text)' }}>{CATEGORY_LABELS[id]}</div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>View all tools</div>
             </Link>
           ))}
         </div>
       </section>
 
       {/* Popular tools */}
-      <section style={{ marginBottom: 48 }}>
-        <h2 style={{ fontSize: '1.25rem', marginBottom: 16, color: 'var(--color-text)' }}>Popular tools</h2>
-        <div className="tools-grid">
+      <section style={{ marginBottom: 56 }}>
+        <h2 style={{ fontSize: '1.25rem', marginBottom: 20, color: 'var(--color-text)', fontWeight: 600, letterSpacing: '-0.01em' }}>Popular Tools</h2>
+        <div className="tools-grid" style={{ gap: 16 }}>
           {popularTools.map((t) => (
             <ToolCard key={t.id} tool={t} primary={['merge-pdf', 'compress-pdf', 'jpg-to-pdf'].includes(t.id)} />
           ))}
@@ -81,9 +79,9 @@ export default function HomePage() {
 
       {/* Recent tools */}
       {recentTools.length > 0 && (
-        <section style={{ marginBottom: 48 }}>
-          <h2 style={{ fontSize: '1.25rem', marginBottom: 16, color: 'var(--color-text)' }}>Recently used</h2>
-          <div className="tools-grid">
+        <section style={{ marginBottom: 56 }}>
+          <h2 style={{ fontSize: '1.25rem', marginBottom: 20, color: 'var(--color-text)', fontWeight: 600, letterSpacing: '-0.01em' }}>Recently Used</h2>
+          <div className="tools-grid" style={{ gap: 16 }}>
             {recentTools.map((t) => (
               <ToolCard key={t.id} tool={t} />
             ))}
@@ -94,22 +92,28 @@ export default function HomePage() {
       {/* Backend status */}
       <div
         style={{
-          marginTop: 32,
-          padding: '12px 24px',
+          marginTop: 40,
+          padding: '14px 20px',
           textAlign: 'center',
           background: 'var(--color-surface)',
           border: '1px solid var(--color-border)',
-          borderRadius: 'var(--radius-sm)',
-          fontSize: 14,
+          borderRadius: 'var(--radius-md)',
+          fontSize: '0.875rem',
           color: 'var(--color-text-muted)',
         }}
       >
-        {backendStatus === 'checking' && 'Checking backend...'}
+        {backendStatus === 'checking' && '🔄 Checking backend...'}
         {backendStatus === 'online' && (
-          <span style={{ color: 'var(--color-success)' }}>● Backend online</span>
+          <span style={{ color: 'var(--color-success)', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--color-success)', display: 'inline-block' }} />
+            Backend Online
+          </span>
         )}
         {backendStatus === 'offline' && (
-          <span style={{ color: 'var(--color-error)' }}>● Backend offline — start the server</span>
+          <span style={{ color: 'var(--color-error)', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--color-error)', display: 'inline-block' }} />
+            Backend Offline — Start the server
+          </span>
         )}
       </div>
     </div>
