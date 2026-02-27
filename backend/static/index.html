@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>DocPrint Pro — Cyber Cafe PDF & ID Card Tools</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      background: #f5f5f5;
+      color: #232F3E;
+    }
+    .nav {
+      background: #232F3E;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .nav .logo {
+      color: #FF9900;
+      font-weight: bold;
+      font-size: 20px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+    .nav-links a {
+      color: #ccc;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .nav-links a:hover {
+      color: #FF9900;
+    }
+    .dropdown {
+      position: relative;
+    }
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      background: #232F3E;
+      min-width: 160px;
+      z-index: 100;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+    .dropdown:hover .dropdown-menu {
+      display: block;
+    }
+    .dropdown-menu a {
+      display: block;
+      padding: 8px 16px;
+      color: #ccc;
+      font-size: 13px;
+    }
+    .dropdown-menu a:hover {
+      color: #FF9900;
+      background: #1a252f;
+    }
+    .status-bar {
+      background: white;
+      padding: 12px 24px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .status-dot.online {
+      background: #2e7d32;
+    }
+    .status-dot.offline {
+      background: #c62828;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    .section {
+      margin-bottom: 48px;
+    }
+    .section-header {
+      background: #232F3E;
+      color: white;
+      padding: 16px 24px;
+      border-radius: 8px 8px 0 0;
+      margin-bottom: 0;
+    }
+    .section-header h2 {
+      font-size: 20px;
+      color: #FF9900;
+    }
+    .section-header p {
+      font-size: 13px;
+      color: #ccc;
+      margin-top: 4px;
+    }
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      background: white;
+      padding: 24px;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .tool-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 20px;
+      transition: all 0.3s;
+    }
+    .tool-card:hover {
+      border-color: #FF9900;
+      box-shadow: 0 4px 12px rgba(255,153,0,0.2);
+    }
+    .tool-card h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: #232F3E;
+    }
+    .tool-card p {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+    .tool-link {
+      background: #FF9900;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 14px;
+      display: inline-block;
+      transition: background 0.3s;
+    }
+    .tool-link:hover {
+      background: #e68a00;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <span class="logo">DocPrint Pro</span>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <div class="dropdown">
+        <a href="#">PDF Converters</a>
+        <div class="dropdown-menu">
+          <a href="tools/pdf-to-word.html">PDF to Word</a>
+          <a href="tools/pdf-to-ppt.html">PDF to PPT</a>
+          <a href="tools/pdf-to-excel.html">PDF to Excel</a>
+          <a href="tools/pdf-to-jpg.html">PDF to JPG</a>
+          <a href="tools/pdf-to-pdfa.html">PDF to PDF/A</a>
+          <a href="tools/word-to-pdf.html">Word to PDF</a>
+          <a href="tools/excel-to-pdf.html">Excel to PDF</a>
+          <a href="tools/ppt-to-pdf.html">PPT to PDF</a>
+          <a href="tools/jpg-to-pdf.html">JPG to PDF</a>
+          <a href="tools/html-to-pdf.html">HTML to PDF</a>
+        </div>
+      </div>
+      <div class="dropdown">
+        <a href="#">PDF Tools</a>
+        <div class="dropdown-menu">
+          <a href="tools/merge-pdf.html">Merge PDF</a>
+          <a href="tools/split-pdf.html">Split PDF</a>
+          <a href="tools/compress-pdf.html">Compress PDF</a>
+          <a href="tools/watermark-pdf.html">Watermark PDF</a>
+          <a href="tools/rotate-pdf.html">Rotate PDF</a>
+          <a href="tools/add-page-numbers.html">Page Numbers</a>
+          <a href="tools/protect-pdf.html">Protect PDF</a>
+          <a href="tools/unlock-pdf.html">Unlock PDF</a>
+          <a href="tools/sign-pdf.html">Sign PDF</a>
+          <a href="tools/ocr-pdf.html">OCR PDF</a>
+          <a href="tools/scan-to-pdf.html">Scan to PDF</a>
+          <a href="tools/pdf-reader.html">PDF Reader</a>
+        </div>
+      </div>
+      <div class="dropdown">
+        <a href="#">ID Cards</a>
+        <div class="dropdown-menu">
+          <a href="tools/aadhar-cutter.html">Aadhar Cutter</a>
+          <a href="tools/aadhar-advanced.html">Advanced Aadhar</a>
+          <a href="tools/pan-cutter.html">PAN Card</a>
+          <a href="tools/voter-cutter.html">Voter ID</a>
+          <a href="tools/jan-aadhar-cutter.html">JAN Aadhar</a>
+          <a href="tools/ecard-cutter.html">eCard Cutter</a>
+          <a href="tools/multi-id-cutter.html">Multi-ID Tool</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="status-bar">
+    <div class="status-indicator" id="statusIndicator">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusText">Checking backend...</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- SECTION 1: PDF CONVERTERS -->
+    <div class="section">
+      <div class="section-header">
+        <h2>PDF Converter Tools</h2>
+        <p>Convert PDFs to other formats and vice versa — 10 tools</p>
+      </div>
+      <div class="tools-grid">
+        <div class="tool-card">
+          <h3>PDF to Word</h3>
+          <p>Convert PDF documents to editable Word files (.docx)</p>
+          <a href="tools/pdf-to-word.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>PDF to PowerPoint</h3>
+          <p>Convert PDF to PowerPoint presentation (.pptx)</p>
+          <a href="tools/pdf-to-ppt.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>PDF to Excel</h3>
+          <p>Extract tables from PDF into Excel spreadsheet (.xlsx)</p>
+          <a href="tools/pdf-to-excel.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>PDF to JPG</h3>
+          <p>Convert PDF pages to JPG images with quality options</p>
+          <a href="tools/pdf-to-jpg.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>PDF to PDF/A</h3>
+          <p>Convert to PDF/A archival format for government submissions</p>
+          <a href="tools/pdf-to-pdfa.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>Word to PDF</h3>
+          <p>Convert Word documents (.docx, .doc) to PDF format</p>
+          <a href="tools/word-to-pdf.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>Excel to PDF</h3>
+          <p>Convert Excel spreadsheets (.xlsx, .xls) to PDF</p>
+          <a href="tools/excel-to-pdf.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>PowerPoint to PDF</h3>
+          <p>Convert PowerPoint presentations (.pptx, .ppt) to PDF</p>
+          <a href="tools/ppt-to-pdf.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>JPG to PDF</h3>
+          <p>Convert multiple images to a single PDF document</p>
+          <a href="tools/jpg-to-pdf.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>HTML to PDF</h3>
+          <p>Convert HTML files or web URLs to PDF documents</p>
+          <a href="tools/html-to-pdf.html" class="tool-link">Open Tool →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: PDF TOOLS -->
+    <div class="section">
+      <div class="section-header">
+        <h2>PDF Manipulation Tools</h2>
+        <p>Edit, merge, split, compress and manipulate PDFs — 18 tools</p>
+      </div>
+      <div class="tools-grid">
+        <div class="tool-card">
+          <h3>Merge PDF</h3>
+          <p>Combine multiple PDF files into one document</p>
+          <a href="tools/merge-pdf.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>Split PDF</h3>
+          <p>Split PDF into multiple files by page ranges</p>
+          <a href="tools/split-pdf.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>Compress PDF</h3>
+          <p>Reduce PDF file size with quality options</p>
+          <a href="tools/compress-pdf.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>Watermark PDF</h3>
+          <p>Add text watermarks to PDF pages</p>
+          <a href="tools/watermark-pdf.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>Rotate PDF</h3>
+          <p>Rotate PDF pages by 90, 180, or 270 degrees</p>
+          <a href="tools/rotate-pdf.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>Add Page Numbers</h3>
+          <p>Add page numbers to PDF with custom formatting</p>
+          <a href="tools/add-page-numbers.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>Protect PDF</h3>
+          <p>Add password protection to PDF files</p>
+          <a href="tools/protect-pdf.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>Unlock PDF</h3>
+          <p>Remove password protection from PDF files</p>
+          <a href="tools/unlock-pdf.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>Crop PDF</h3>
+          <p>Crop PDF pages to remove margins and borders</p>
+          <a href="tools/crop-pdf.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>Organize PDF</h3>
+          <p>Reorder PDF pages in custom sequence</p>
+          <a href="tools/organize-pdf.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>Remove Pages</h3>
+          <p>Delete specific pages from PDF documents</p>
+          <a href="tools/remove-pages.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>Sign PDF</h3>
+          <p>Add signature image to PDF documents</p>
+          <a href="tools/sign-pdf.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>OCR PDF</h3>
+          <p>Extract text from scanned PDFs using OCR</p>
+          <a href="tools/ocr-pdf.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>Edit PDF</h3>
+          <p>Add text and annotations to PDF pages</p>
+          <a href="tools/edit-pdf.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>Compare PDF</h3>
+          <p>Compare two PDF files and highlight differences</p>
+          <a href="tools/compare-pdf.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>Repair PDF</h3>
+          <p>Attempt to repair corrupted PDF files</p>
+          <a href="tools/repair-pdf.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>Scan to PDF</h3>
+          <p>Convert phone photos of documents to clean PDF</p>
+          <a href="tools/scan-to-pdf.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>PDF Reader</h3>
+          <p>View PDF info, metadata, and page thumbnails</p>
+          <a href="tools/pdf-reader.html" class="tool-link">Open Tool →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: ID CARD TOOLS -->
+    <div class="section">
+      <div class="section-header">
+        <h2>Indian ID Card Processing Tools</h2>
+        <p>Crop and prepare ID cards for printing — 7 specialized tools</p>
+      </div>
+      <div class="tools-grid">
+        <div class="tool-card">
+          <h3>eCard Cutter</h3>
+          <p>Universal auto-detect cutter for any government ID card</p>
+          <a href="tools/ecard-cutter.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>Aadhar Card Cutter</h3>
+          <p>Crop Aadhar card from UIDAI PDF for printing</p>
+          <a href="tools/aadhar-cutter.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>Advanced Aadhar</h3>
+          <p>QR detection + manual crop + border styles for Aadhar</p>
+          <a href="tools/aadhar-advanced.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>PAN Card Cutter</h3>
+          <p>Crop PAN card from Income Tax Department PDF</p>
+          <a href="tools/pan-cutter.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>Voter ID Cutter</h3>
+          <p>Crop eEPIC Voter ID card (front/back support)</p>
+          <a href="tools/voter-cutter.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>JAN Aadhar Cutter</h3>
+          <p>Crop JAN Aadhar card (Rajasthan government)</p>
+          <a href="tools/jan-aadhar-cutter.html" class="tool-link">Open Tool →</a>
+        </div>
+        <div class="tool-card">
+          <h3>Multi-ID Tool</h3>
+          <p>Detect and crop ALL ID cards from any PDF at once</p>
+          <a href="tools/multi-id-cutter.html" class="tool-link">Open Tool →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = 'http://localhost:8000';
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+
+    async function checkBackendStatus() {
+      try {
+        const res = await fetch(API + '/api/health', { method: 'GET' });
+        if (res.ok) {
+          statusDot.classList.add('online');
+          statusText.textContent = 'Backend Online';
+        } else {
+          statusDot.classList.add('offline');
+          statusText.textContent = 'Backend Offline — start your server';
+        }
+      } catch (e) {
+        statusDot.classList.add('offline');
+        statusText.textContent = 'Backend Offline — start your server at ' + API;
+      }
+    }
+
+    // Check status on page load
+    checkBackendStatus();
+  </script>
+</body>
+</html>

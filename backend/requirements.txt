@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+python-multipart
+PyMuPDF
+pypdf
+reportlab
+Pillow
+opencv-python-headless
+easyocr
+python-docx
+openpyxl
+pdfplumber
+img2pdf
+weasyprint
+aiofiles
+python-magic
+requests

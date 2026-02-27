@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-ID Card Crop Tool - Cyber Cafe PDF Tools</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #232F3E 0%, #1a242f 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        .navbar {
+            background: #232F3E;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .navbar h1 {
+            color: #FF9900;
+            font-size: 1.5rem;
+        }
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 1rem;
+            font-size: 0.9rem;
+        }
+        .navbar a:hover {
+            color: #FF9900;
+        }
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .tool-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .tool-header h2 {
+            color: #FF9900;
+            margin-bottom: 0.5rem;
+        }
+        .tool-header p {
+            color: #aaa;
+        }
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .upload-zone {
+            border: 2px dashed #FF9900;
+            border-radius: 10px;
+            padding: 3rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .upload-zone:hover {
+            background: rgba(255,153,0,0.1);
+        }
+        .upload-zone.dragover {
+            background: rgba(255,153,0,0.2);
+            border-color: #fff;
+        }
+        .file-input {
+            display: none;
+        }
+        .file-info {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255,153,0,0.1);
+            border-radius: 5px;
+        }
+        .section-title {
+            color: #FF9900;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        .dpi-options {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .dpi-option {
+            flex: 1;
+        }
+        .dpi-option input[type="radio"] {
+            display: none;
+        }
+        .dpi-option label {
+            display: block;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .dpi-option input[type="radio"]:checked + label {
+            background: rgba(255,153,0,0.2);
+            border-color: #FF9900;
+        }
+        .cards-per-page {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .cards-option {
+            flex: 1;
+        }
+        .cards-option input[type="radio"] {
+            display: none;
+        }
+        .cards-option label {
+            display: block;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .cards-option input[type="radio"]:checked + label {
+            background: rgba(255,153,0,0.2);
+            border-color: #FF9900;
+        }
+        .checkbox-group {
+            margin-bottom: 1.5rem;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 0.5rem;
+            width: 18px;
+            height: 18px;
+        }
+        .btn {
+            background: #FF9900;
+            color: #232F3E;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #e68a00;
+            transform: translateY(-2px);
+        }
+        .btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .status {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255,153,0,0.1);
+            border-radius: 5px;
+            text-align: center;
+        }
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid #FF9900;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .result, .error {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 5px;
+        }
+        .result {
+            background: rgba(0,255,0,0.1);
+            border: 1px solid rgba(0,255,0,0.3);
+        }
+        .error {
+            background: rgba(255,0,0,0.1);
+            border: 1px solid rgba(255,0,0,0.3);
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(255,153,0,0.2);
+            border: 1px solid #FF9900;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            margin: 0.3rem;
+        }
+        .info-box {
+            background: rgba(255,153,0,0.1);
+            border-left: 4px solid #FF9900;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>🔧 Multi-ID Card Crop Tool</h1>
+        <a href="../index.html">← Back to Home</a>
+    </nav>
+
+    <div class="container">
+        <div class="tool-header">
+            <h2>Multi-ID Card Crop Tool</h2>
+            <p>Detects and crops ALL ID cards from ANY PDF — put all your IDs in one file!</p>
+        </div>
+
+        <div class="card">
+            <div class="upload-zone" id="uploadZone">
+                <h3>📄 Drop PDF with Multiple ID Cards Here</h3>
+                <p>or click to browse</p>
+                <input type="file" id="fileInput" class="file-input" accept=".pdf">
+            </div>
+            <div class="file-info" id="fileInfo"></div>
+        </div>
+
+        <div class="card" id="optionsCard" style="display:none;">
+            <h3 class="section-title">Print Quality (DPI)</h3>
+            <div class="dpi-options">
+                <div class="dpi-option">
+                    <input type="radio" id="dpi150" name="dpi" value="150">
+                    <label for="dpi150">150 DPI<br><small>Standard</small></label>
+                </div>
+                <div class="dpi-option">
+                    <input type="radio" id="dpi200" name="dpi" value="200" checked>
+                    <label for="dpi200">200 DPI<br><small>Recommended</small></label>
+                </div>
+                <div class="dpi-option">
+                    <input type="radio" id="dpi300" name="dpi" value="300">
+                    <label for="dpi300">300 DPI<br><small>High Quality</small></label>
+                </div>
+            </div>
+
+            <h3 class="section-title">Cards Per Page</h3>
+            <div class="cards-per-page">
+                <div class="cards-option">
+                    <input type="radio" id="cards2" name="cards_per_page" value="2">
+                    <label for="cards2">2 cards per page</label>
+                </div>
+                <div class="cards-option">
+                    <input type="radio" id="cards4" name="cards_per_page" value="4" checked>
+                    <label for="cards4">4 cards per page</label>
+                </div>
+            </div>
+
+            <div class="checkbox-group">
+                <label>
+                    <input type="checkbox" id="cutMarks" checked>
+                    <span>Add cutting guide marks</span>
+                </label>
+            </div>
+
+            <button class="btn" id="submitBtn">Process All ID Cards</button>
+
+            <div class="status" id="status">
+                <div class="spinner"></div>
+                <p>Detecting and processing all ID cards...</p>
+            </div>
+
+            <div class="result" id="result"></div>
+            <div class="error" id="error"></div>
+
+            <div class="info-box">
+                <strong>💡 How to use:</strong> Scan or combine all your ID PDFs into one file, upload here, and get a single print-ready PDF with all cards arranged for cutting.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const optionsCard = document.getElementById('optionsCard');
+        const submitBtn = document.getElementById('submitBtn');
+        const status = document.getElementById('status');
+        const result = document.getElementById('result');
+        const error = document.getElementById('error');
+
+        let selectedFile = null;
+
+        uploadZone.addEventListener('click', () => fileInput.click());
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+        uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+        });
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) handleFile(e.target.files[0]);
+        });
+
+        function handleFile(file) {
+            if (!file.name.toLowerCase().endsWith('.pdf')) {
+                alert('Please select a PDF file');
+                return;
+            }
+            selectedFile = file;
+            fileInfo.style.display = 'block';
+            fileInfo.innerHTML = `<strong>Selected:</strong> ${file.name} (${formatFileSize(file.size)})`;
+            optionsCard.style.display = 'block';
+            result.style.display = 'none';
+            error.style.display = 'none';
+        }
+
+        submitBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
+
+            const selectedDpi = document.querySelector('input[name="dpi"]:checked').value;
+            const selectedCardsPerPage = document.querySelector('input[name="cards_per_page"]:checked').value;
+            const cutMarks = document.getElementById('cutMarks').checked;
+
+            const fd = new FormData();
+            fd.append('file', selectedFile);
+            fd.append('dpi', selectedDpi);
+            fd.append('cards_per_page', selectedCardsPerPage);
+            fd.append('cut_marks', cutMarks);
+
+            submitBtn.disabled = true;
+            status.style.display = 'block';
+            result.style.display = 'none';
+            error.style.display = 'none';
+
+            try {
+                const response = await fetch('http://localhost:8000/api/cards/multi-id-cut', {
+                    method: 'POST',
+                    body: fd
+                });
+
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.detail || 'Processing failed');
+                }
+
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'all_ids_print.pdf';
+                a.click();
+
+                const totalCards = response.headers.get('X-Total-Cards-Detected');
+                const totalPages = response.headers.get('X-Total-Print-Pages');
+                const cardsSummary = response.headers.get('X-Cards-Summary');
+
+                let resultHTML = '<strong>✅ All ID cards processed successfully!</strong><br>';
+                if (totalCards) {
+                    resultHTML += `<p>Found ${totalCards} cards in your PDF</p>`;
+                }
+                if (totalPages) {
+                    resultHTML += `<p>Generated ${totalPages} print pages</p>`;
+                }
+                if (cardsSummary) {
+                    try {
+                        const summary = JSON.parse(cardsSummary);
+                        resultHTML += '<p>Card types found:</p>';
+                        for (const [type, count] of Object.entries(summary)) {
+                            resultHTML += `<span class="badge">${type}: ${count}</span>`;
+                        }
+                    } catch (e) {}
+                }
+                result.innerHTML = resultHTML;
+                result.style.display = 'block';
+            } catch (err) {
+                error.innerHTML = `<strong>❌ Error:</strong> ${err.message}`;
+                error.style.display = 'block';
+            } finally {
+                status.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        });
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+        }
+    </script>
+</body>
+</html>
