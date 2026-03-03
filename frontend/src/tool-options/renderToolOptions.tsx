@@ -7,10 +7,14 @@ import IdCardLayoutOptions from './IdCardLayoutOptions'
 import WatermarkPdfOptions from './WatermarkPdfOptions'
 import RotatePdfOptions from './RotatePdfOptions'
 import OcrPdfOptions from './OcrPdfOptions'
+import DynamicToolOptions from './DynamicToolOptions'
+import CropImageOptions from './CropImageOptions'
+import { TOOL_FIELDS } from '../config/toolFields'
 
 interface OptionsSlotProps {
   options: ToolOptionsState
   setOptions: React.Dispatch<React.SetStateAction<ToolOptionsState>>
+  files?: File[]
 }
 
 const ID_CARD_TOOLS = [
@@ -21,9 +25,22 @@ const ID_CARD_TOOLS = [
 export function renderToolOptions(
   toolId: string,
   options: ToolOptionsState,
-  setOptions: React.Dispatch<React.SetStateAction<ToolOptionsState>>
+  setOptions: React.Dispatch<React.SetStateAction<ToolOptionsState>>,
+  files?: File[]
 ): React.ReactNode {
-  const props: OptionsSlotProps = { options, setOptions }
+  const props: OptionsSlotProps = { options, setOptions, files }
+  
+  // Special case for crop-image with interactive UI
+  if (toolId === 'crop-image') {
+    return <CropImageOptions {...props} />
+  }
+  
+  // Check if tool has dynamic fields defined
+  if (TOOL_FIELDS[toolId]) {
+    return <DynamicToolOptions toolId={toolId} options={options} onChange={setOptions} />
+  }
+  
+  // Fallback to hardcoded components
   switch (toolId) {
     case 'compress-pdf':
       return <CompressPdfOptions {...props} />

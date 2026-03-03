@@ -8,8 +8,19 @@ import type { ToolConfig } from '../config/toolsRegistry'
 import type { ToolOptionsState } from '../components/tools/ToolLayout'
 import { renderToolOptions } from '../tool-options/renderToolOptions'
 import { validateBackendResponse } from '../utils/backendValidator'
+import { TOOL_FIELDS } from '../config/toolFields'
 
 function getDefaultOptions(toolId: string): ToolOptionsState {
+  // Check if tool has dynamic fields
+  if (TOOL_FIELDS[toolId]) {
+    const defaults: ToolOptionsState = {}
+    TOOL_FIELDS[toolId].forEach(field => {
+      defaults[field.name] = field.defaultValue
+    })
+    return defaults
+  }
+  
+  // Fallback to hardcoded defaults
   const defaults: Record<string, ToolOptionsState> = {
     'split-pdf': { mode: 'ranges', ranges: '1-' },
     'watermark-pdf': { text: 'Watermark', font_size: 48, color: '808080', opacity: 0.3, rotation: 0, position: 'center', tile: false },
@@ -64,8 +75,13 @@ function buildFormData(config: ToolConfig, files: File[], options: ToolOptionsSt
       if (options.every_n != null) body.append('every_n', String(options.every_n))
     } else {
       Object.entries(options).forEach(([k, v]) => {
-        if (v !== undefined && v !== null && v !== '') {
-          body.append(k, String(v))
+        if (v !== undefined && v !== null) {
+          // Convert boolean to string, send all other values
+          if (typeof v === 'boolean') {
+            body.append(k, v ? 'true' : 'false')
+          } else if (v !== '') {
+            body.append(k, String(v))
+          }
         }
       })
       // Ensure watermark text is always sent
@@ -195,7 +211,7 @@ export default function ToolPage() {
 
   const resultDownloadUrl = resultBlob ? URL.createObjectURL(resultBlob) : null
 
-  const optionsSlot = renderToolOptions(config.id, options, setOptions)
+  const optionsSlot = renderToolOptions(config.id, options, setOptions, files)
 
   const resultSlot =
     config.responseType === 'json' && resultJson ? (
