@@ -20,13 +20,14 @@ export default function TopNavbar() {
       left: 256,
       right: 0,
       height: 64,
-      background: '#0A0A0A',
-      borderBottom: '1px solid #262626',
+      background: '#FFFFFF',
+      borderBottom: '1px solid #E5E7EB',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
       padding: '0 24px',
       zIndex: 30,
+      boxShadow: '0 1px 3px rgba(0,0,0,0.02)',
     }}>
       <div style={{ flex: 1, maxWidth: 480 }}>
         <GlobalSearch recentToolIds={recentIds} />
@@ -39,22 +40,23 @@ export default function TopNavbar() {
           alignItems: 'center',
           gap: 8,
           padding: '6px 12px',
-          borderRadius: '0.5rem',
-          background: backendStatus === 'online' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-          border: `1px solid ${backendStatus === 'online' ? '#10b981' : '#ef4444'}`,
+          borderRadius: '12px',
+          background: backendStatus === 'online' ? '#E8F5E9' : '#FDECEC',
+          border: `1px solid ${backendStatus === 'online' ? '#4CAF50' : '#E53935'}`,
         }}>
           <span style={{
             width: 8,
             height: 8,
             borderRadius: '50%',
-            background: backendStatus === 'online' ? '#10b981' : '#ef4444',
+            background: backendStatus === 'online' ? '#4CAF50' : '#E53935',
+            animation: backendStatus === 'checking' ? 'pulse 2s infinite' : 'none',
           }} />
           <span style={{
             fontSize: '0.8rem',
             fontWeight: 500,
-            color: backendStatus === 'online' ? '#10b981' : '#ef4444',
+            color: backendStatus === 'online' ? '#2E7D32' : '#E53935',
           }}>
-            {backendStatus === 'checking' ? 'Checking...' : backendStatus === 'online' ? 'Online' : 'Offline'}
+            {backendStatus === 'checking' ? 'Checking...' : backendStatus === 'online' ? 'System Online' : 'System Offline'}
           </span>
         </div>
 
@@ -64,27 +66,28 @@ export default function TopNavbar() {
           style={{
             width: 40,
             height: 40,
-            borderRadius: '0.5rem',
-            background: 'transparent',
-            border: '1px solid #262626',
+            borderRadius: '12px',
+            background: '#F9FAFB',
+            border: '1px solid #E5E7EB',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
-            color: '#A1A1AA',
+            color: '#6B7280',
             transition: 'all 0.2s',
+            fontSize: '1.1rem',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#121212'
-            e.currentTarget.style.color = '#ffffff'
+            e.currentTarget.style.background = '#E8F5E9'
+            e.currentTarget.style.borderColor = '#4CAF50'
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'transparent'
-            e.currentTarget.style.color = '#A1A1AA'
+            e.currentTarget.style.background = '#F9FAFB'
+            e.currentTarget.style.borderColor = '#E5E7EB'
           }}
           aria-label="Notifications"
         >
-          <span style={{ fontSize: '1.25rem' }}>🔔</span>
+          🔔
         </button>
 
         {/* Settings Icon */}
@@ -93,27 +96,28 @@ export default function TopNavbar() {
           style={{
             width: 40,
             height: 40,
-            borderRadius: '0.5rem',
-            background: 'transparent',
-            border: '1px solid #262626',
+            borderRadius: '12px',
+            background: '#F9FAFB',
+            border: '1px solid #E5E7EB',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
-            color: '#A1A1AA',
+            color: '#6B7280',
             transition: 'all 0.2s',
+            fontSize: '1.1rem',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#121212'
-            e.currentTarget.style.color = '#ffffff'
+            e.currentTarget.style.background = '#E8F5E9'
+            e.currentTarget.style.borderColor = '#4CAF50'
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'transparent'
-            e.currentTarget.style.color = '#A1A1AA'
+            e.currentTarget.style.background = '#F9FAFB'
+            e.currentTarget.style.borderColor = '#E5E7EB'
           }}
           aria-label="Settings"
         >
-          <span style={{ fontSize: '1.25rem' }}>⚙️</span>
+          ⚙️
         </button>
 
         {/* Profile Avatar */}
@@ -122,21 +126,21 @@ export default function TopNavbar() {
           style={{
             width: 40,
             height: 40,
-            borderRadius: '0.5rem',
-            background: '#2563EB',
+            borderRadius: '12px',
+            background: '#4CAF50',
             border: 'none',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
-            fontSize: '1.25rem',
+            fontSize: '1.1rem',
             transition: 'all 0.2s',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#1d4ed8'
+            e.currentTarget.style.background = '#2E7D32'
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = '#2563EB'
+            e.currentTarget.style.background = '#4CAF50'
           }}
           aria-label="Profile"
         >

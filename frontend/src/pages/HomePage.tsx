@@ -1,17 +1,24 @@
 import { Link } from 'react-router-dom'
-import GlobalSearch from '../components/search/GlobalSearch'
-import ToolCard from '../components/tools/ToolCard'
-import { useRecentTools } from '../hooks/useRecentTools'
-import { getToolById, type ToolConfig } from '../config/toolsRegistry'
-import { CATEGORY_IDS, CATEGORY_LABELS } from '../config/categories'
-import { apiUrl } from '../config/api'
+import { CATEGORY_LABELS } from '../config/categories'
+import { FileText, Layers, CreditCard, Image, Shield, Zap, Lock, CheckCircle } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { apiUrl } from '../config/api'
 
-const QUICK_ACTION_IDS = ['merge-pdf', 'compress-pdf', 'jpg-to-pdf', 'word-to-pdf', 'aadhar-cutter']
-const POPULAR_IDS = ['merge-pdf', 'compress-pdf', 'pdf-to-word', 'word-to-pdf', 'jpg-to-pdf', 'split-pdf', 'protect-pdf', 'aadhar-cutter', 'ocr-pdf', 'scan-to-pdf']
+const CATEGORY_ICONS: Record<string, React.ReactNode> = {
+  pdf: <FileText size={48} />,
+  convert: <Layers size={48} />,
+  'id-cards': <CreditCard size={48} />,
+  image: <Image size={48} />,
+}
+
+const CATEGORY_DESCRIPTIONS: Record<string, string> = {
+  pdf: 'Merge, split, compress, protect and manipulate PDF files',
+  convert: 'Convert PDFs to Word, Excel, PowerPoint and other formats',
+  'id-cards': 'Process Aadhar, PAN, Voter ID and other government ID cards',
+  image: 'Resize, crop, compress and process images',
+}
 
 export default function HomePage() {
-  const { recentIds } = useRecentTools()
   const [backendStatus, setBackendStatus] = useState<'checking' | 'online' | 'offline'>('checking')
 
   useEffect(() => {
@@ -20,102 +27,133 @@ export default function HomePage() {
       .catch(() => setBackendStatus('offline'))
   }, [])
 
-  const quickTools = QUICK_ACTION_IDS.map((id) => getToolById(id)).filter((t): t is ToolConfig => t != null)
-  const popularTools = POPULAR_IDS.map((id) => getToolById(id)).filter((t): t is ToolConfig => t != null)
-  const recentTools = recentIds.map((id) => getToolById(id)).filter((t): t is ToolConfig => t != null)
-
   return (
-    <div className="container">
-      {/* Hero */}
-      <section className="hero" style={{ marginBottom: 48, textAlign: 'center', padding: '60px 0 40px' }}>
-        <h1 style={{ fontSize: '2.75rem', marginBottom: 16, color: 'var(--color-text)', fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.02em' }}>
-          Every document and image tool in one place
-        </h1>
-        <p style={{ fontSize: '1.125rem', color: 'var(--color-text-muted)', maxWidth: 640, margin: '0 auto 32px', lineHeight: 1.6 }}>
-          Merge, convert, compress, and edit PDFs. Process ID cards. All tools are free and easy to use.
-        </p>
-      </section>
-
-      {/* Quick actions */}
-      <section style={{ marginBottom: 56 }}>
-        <h2 style={{ fontSize: '1.25rem', marginBottom: 20, color: 'var(--color-text)', fontWeight: 600, letterSpacing: '-0.01em' }}>Quick Actions</h2>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-          {quickTools.map((t) => (
-            <Link key={t.id} to={`/tools/${t.id}`} className="chip" style={{ padding: '10px 18px', fontSize: '0.9rem', fontWeight: 500 }}>
-              {t.title}
+    <div style={{ minHeight: '100vh' }}>
+      {/* Hero Section */}
+      <section style={{ background: 'linear-gradient(135deg, #0D47A1 0%, #1565C0 100%)', color: '#fff', padding: '80px 0 60px' }}>
+        <div className="container" style={{ textAlign: 'center' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.15)', padding: '6px 16px', borderRadius: 20, marginBottom: 24, fontSize: '0.875rem', fontWeight: 500 }}>
+            <Shield size={16} />
+            <span>Government of India Initiative</span>
+          </div>
+          <h1 style={{ fontSize: '3rem', marginBottom: 20, fontWeight: 700, lineHeight: 1.2 }}>
+            Digital Document Services
+          </h1>
+          <p style={{ fontSize: '1.25rem', maxWidth: 700, margin: '0 auto 40px', opacity: 0.95, lineHeight: 1.6 }}>
+            Secure, fast, and reliable document processing platform for citizens
+          </p>
+          <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link to="/category/pdf" style={{ textDecoration: 'none' }}>
+              <button style={{ padding: '14px 32px', background: '#FF6F00', color: '#fff', border: 'none', borderRadius: 6, fontSize: '1rem', fontWeight: 600, cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>
+                Get Started
+              </button>
             </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Category shortcuts */}
-      <section style={{ marginBottom: 56 }}>
-        <h2 style={{ fontSize: '1.25rem', marginBottom: 20, color: 'var(--color-text)', fontWeight: 600, letterSpacing: '-0.01em' }}>Categories</h2>
-        <div className="tools-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 16 }}>
-          {CATEGORY_IDS.map((id) => (
-            <Link
-              key={id}
-              to={`/category/${id}`}
-              className="card"
-              style={{ padding: 28, textAlign: 'center', textDecoration: 'none', color: 'inherit', transition: 'all 0.2s' }}
-            >
-              <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>📁</div>
-              <div style={{ fontWeight: 600, marginBottom: 6, fontSize: '1.05rem', color: 'var(--color-text)' }}>{CATEGORY_LABELS[id]}</div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>View all tools</div>
+            <Link to="/category/id-cards" style={{ textDecoration: 'none' }}>
+              <button style={{ padding: '14px 32px', background: 'rgba(255,255,255,0.2)', color: '#fff', border: '1px solid rgba(255,255,255,0.3)', borderRadius: 6, fontSize: '1rem', fontWeight: 600, cursor: 'pointer' }}>
+                ID Card Tools
+              </button>
             </Link>
-          ))}
+          </div>
         </div>
       </section>
 
-      {/* Popular tools */}
-      <section style={{ marginBottom: 56 }}>
-        <h2 style={{ fontSize: '1.25rem', marginBottom: 20, color: 'var(--color-text)', fontWeight: 600, letterSpacing: '-0.01em' }}>Popular Tools</h2>
-        <div className="tools-grid" style={{ gap: 16 }}>
-          {popularTools.map((t) => (
-            <ToolCard key={t.id} tool={t} primary={['merge-pdf', 'compress-pdf', 'jpg-to-pdf'].includes(t.id)} />
-          ))}
-        </div>
-      </section>
-
-      {/* Recent tools */}
-      {recentTools.length > 0 && (
-        <section style={{ marginBottom: 56 }}>
-          <h2 style={{ fontSize: '1.25rem', marginBottom: 20, color: 'var(--color-text)', fontWeight: 600, letterSpacing: '-0.01em' }}>Recently Used</h2>
-          <div className="tools-grid" style={{ gap: 16 }}>
-            {recentTools.map((t) => (
-              <ToolCard key={t.id} tool={t} />
+      {/* Features */}
+      <section style={{ padding: '60px 0', background: '#F5F7FA' }}>
+        <div className="container">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 32 }}>
+            {[
+              { icon: <Shield size={32} color="#2E7D32" />, title: 'Secure & Private', desc: 'All files processed locally with encryption' },
+              { icon: <Zap size={32} color="#FF6F00" />, title: 'Lightning Fast', desc: 'Process documents in seconds' },
+              { icon: <Lock size={32} color="#1565C0" />, title: 'No Registration', desc: 'Use all tools without signup' },
+              { icon: <CheckCircle size={32} color="#2E7D32" />, title: 'Free Forever', desc: 'All services completely free' },
+            ].map((f, i) => (
+              <div key={i} style={{ textAlign: 'center' }}>
+                <div style={{ marginBottom: 16 }}>{f.icon}</div>
+                <h3 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: 8, color: '#1a1a1a' }}>{f.title}</h3>
+                <p style={{ fontSize: '0.875rem', color: '#666', lineHeight: 1.5 }}>{f.desc}</p>
+              </div>
             ))}
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
-      {/* Backend status */}
-      <div
-        style={{
-          marginTop: 40,
-          padding: '14px 20px',
-          textAlign: 'center',
-          background: 'var(--color-surface)',
-          border: '1px solid var(--color-border)',
-          borderRadius: 'var(--radius-md)',
-          fontSize: '0.875rem',
-          color: 'var(--color-text-muted)',
-        }}
-      >
-        {backendStatus === 'checking' && '🔄 Checking backend...'}
-        {backendStatus === 'online' && (
-          <span style={{ color: 'var(--color-success)', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--color-success)', display: 'inline-block' }} />
-            Backend Online
-          </span>
-        )}
-        {backendStatus === 'offline' && (
-          <span style={{ color: 'var(--color-error)', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--color-error)', display: 'inline-block' }} />
-            Backend Offline — Start the server
-          </span>
-        )}
-      </div>
+      {/* Service Categories */}
+      <section style={{ padding: '60px 0' }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', marginBottom: 48 }}>
+            <h2 style={{ fontSize: '2rem', marginBottom: 12, color: '#1a1a1a', fontWeight: 700 }}>Our Services</h2>
+            <p style={{ fontSize: '1rem', color: '#666', maxWidth: 600, margin: '0 auto' }}>Choose from our comprehensive suite of document processing tools</p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 24 }}>
+            {['pdf', 'convert', 'id-cards', 'image'].map((id) => (
+              <Link key={id} to={`/category/${id}`} style={{ textDecoration: 'none' }}>
+                <div style={{ padding: 32, textAlign: 'center', background: '#fff', border: '2px solid #E0E0E0', borderRadius: 8, transition: 'all 0.3s', cursor: 'pointer', height: '100%' }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = '#FF6F00'
+                    e.currentTarget.style.transform = 'translateY(-4px)'
+                    e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = '#E0E0E0'
+                    e.currentTarget.style.transform = 'translateY(0)'
+                    e.currentTarget.style.boxShadow = 'none'
+                  }}>
+                  <div style={{ marginBottom: 20, color: '#1565C0' }}>{CATEGORY_ICONS[id]}</div>
+                  <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: 12, color: '#1a1a1a' }}>
+                    {CATEGORY_LABELS[id as keyof typeof CATEGORY_LABELS]}
+                  </h3>
+                  <p style={{ fontSize: '0.875rem', color: '#666', marginBottom: 24, lineHeight: 1.5 }}>
+                    {CATEGORY_DESCRIPTIONS[id]}
+                  </p>
+                  <div style={{ padding: '10px 24px', background: '#FF6F00', color: '#fff', border: 'none', borderRadius: 6, fontSize: '0.875rem', fontWeight: 600, display: 'inline-block' }}>
+                    Explore →
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Stats */}
+      <section style={{ padding: '60px 0', background: 'linear-gradient(135deg, #2E7D32 0%, #388E3C 100%)', color: '#fff' }}>
+        <div className="container">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 32, textAlign: 'center' }}>
+            {[
+              { num: '50+', label: 'Tools Available' },
+              { num: '100%', label: 'Free to Use' },
+              { num: '24/7', label: 'Always Available' },
+              { num: '0', label: 'Data Stored' },
+            ].map((s, i) => (
+              <div key={i}>
+                <div style={{ fontSize: '2.5rem', fontWeight: 700, marginBottom: 8 }}>{s.num}</div>
+                <div style={{ fontSize: '1rem', opacity: 0.9 }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* System Status */}
+      <section style={{ padding: '40px 0' }}>
+        <div className="container">
+          <div style={{ padding: '20px', textAlign: 'center', background: '#fff', border: '1px solid #E0E0E0', borderRadius: 8 }}>
+            {backendStatus === 'checking' && <span style={{ color: '#666' }}>🔄 Checking system status...</span>}
+            {backendStatus === 'online' && (
+              <span style={{ color: '#2E7D32', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#2E7D32' }} />
+                All Systems Operational
+              </span>
+            )}
+            {backendStatus === 'offline' && (
+              <span style={{ color: '#D32F2F', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#D32F2F' }} />
+                System Offline — Please start the server
+              </span>
+            )}
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

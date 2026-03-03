@@ -7,6 +7,7 @@ import { apiUrl } from '../config/api'
 import type { ToolConfig } from '../config/toolsRegistry'
 import type { ToolOptionsState } from '../components/tools/ToolLayout'
 import { renderToolOptions } from '../tool-options/renderToolOptions'
+import { validateBackendResponse } from '../utils/backendValidator'
 
 function getDefaultOptions(toolId: string): ToolOptionsState {
   const defaults: Record<string, ToolOptionsState> = {
@@ -62,7 +63,15 @@ function buildFormData(config: ToolConfig, files: File[], options: ToolOptionsSt
       if (options.ranges != null) body.append('ranges', String(options.ranges))
       if (options.every_n != null) body.append('every_n', String(options.every_n))
     } else {
-      Object.entries(options).forEach(([k, v]) => body.append(k, String(v)))
+      Object.entries(options).forEach(([k, v]) => {
+        if (v !== undefined && v !== null && v !== '') {
+          body.append(k, String(v))
+        }
+      })
+      // Ensure watermark text is always sent
+      if (config.id === 'watermark-pdf' && !body.has('text')) {
+        body.append('text', 'Watermark')
+      }
     }
   }
 
@@ -79,6 +88,7 @@ export default function ToolPage() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [statusMessage] = useState('Processing...')
   const [resultBlob, setResultBlob] = useState<Blob | null>(null)
+  const [previewBlob, setPreviewBlob] = useState<Blob | null>(null)
   const [resultJson, setResultJson] = useState<unknown>(null)
   const [resultFilename, setResultFilename] = useState('')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -91,11 +101,38 @@ export default function ToolPage() {
     if (config) setOptions(getDefaultOptions(config.id))
   }, [config?.id])
 
+  // Live preview for watermark
+  const generatePreview = useCallback(async () => {
+    if (config?.id !== 'watermark-pdf' || files.length === 0) return
+    
+    try {
+      const { url, body } = buildFormData(config, files, options)
+      const res = await fetch(apiUrl(url), { method: config.method, body })
+      const validated = await validateBackendResponse(res)
+      
+      if (validated.type === 'blob' && validated.blob) {
+        setPreviewBlob(validated.blob)
+      }
+    } catch (e) {
+      console.error('Preview failed:', e)
+    }
+  }, [config, files, options])
+
+  useEffect(() => {
+    if (config?.id === 'watermark-pdf' && files.length > 0) {
+      const timer = setTimeout(() => {
+        generatePreview()
+      }, 500)
+      return () => clearTimeout(timer)
+    }
+  }, [config?.id, files, options, generatePreview])
+
   const reset = useCallback(() => {
     setFiles([])
     setOptions({})
     setStatus('idle')
     setResultBlob(null)
+    setPreviewBlob(null)
     setResultJson(null)
     setResultFilename('')
     setErrorMessage(null)
@@ -113,32 +150,32 @@ export default function ToolPage() {
       const { url, body } = buildFormData(config, files, options)
       const res = await fetch(apiUrl(url), { method: config.method, body })
 
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}))
-        const detail = err.detail
-        let message = 'Something went wrong'
-        if (typeof detail === 'string') message = detail
-        else if (Array.isArray(detail) && detail.length > 0)
-          message = detail.map((d: { msg?: string }) => d.msg ?? '').filter(Boolean).join('. ') || message
-        else if (detail && typeof detail === 'object') message = JSON.stringify(detail)
-        setErrorMessage(message)
-        setStatus('error')
-        return
-      }
+      const validated = await validateBackendResponse(res)
 
-      if (config.responseType === 'json') {
-        const data = await res.json()
-        setResultJson(data)
+      if (validated.type === 'json') {
+        setResultJson(validated.data)
         setStatus('success')
         return
       }
 
-      const blob = await res.blob()
-      const contentDisp = res.headers.get('content-disposition')
-      const filename = contentDisp?.match(/filename="?([^";]+)"?/)?.[1] ?? config.outputFilename ?? 'download'
-      setResultBlob(blob)
-      setResultFilename(filename)
-      setStatus('success')
+      if (validated.type === 'blob' && validated.blob) {
+        const ct = validated.contentType || ''
+        const expectedPdf = config.category === 'pdf' || config.category === 'convert' || config.id.includes('pdf')
+        const expectedImage = config.category === 'image' || config.id.includes('image')
+        
+        if (expectedPdf && !ct.includes('pdf') && !ct.includes('zip')) {
+          throw new Error('Backend returned unexpected output format')
+        }
+        if (expectedImage && !ct.includes('image') && !ct.includes('zip') && !ct.includes('pdf')) {
+          throw new Error('Backend returned unexpected output format')
+        }
+
+        const contentDisp = res.headers.get('content-disposition')
+        const filename = contentDisp?.match(/filename="?([^";]+)"?/)?.[1] ?? config.outputFilename ?? 'download'
+        setResultBlob(validated.blob)
+        setResultFilename(filename)
+        setStatus('success')
+      }
     } catch (e) {
       setErrorMessage(e instanceof Error ? e.message : 'Network error')
       setStatus('error')
@@ -180,6 +217,8 @@ export default function ToolPage() {
       onReset={reset}
       errorMessage={errorMessage}
       resultSlot={resultSlot}
+      resultBlob={resultBlob}
+      previewBlob={config?.id === 'watermark-pdf' && status === 'idle' ? previewBlob : undefined}
     />
   )
 }

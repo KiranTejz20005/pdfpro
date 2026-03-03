@@ -4,6 +4,9 @@ import SplitPdfOptions from './SplitPdfOptions'
 import ProtectPdfOptions from './ProtectPdfOptions'
 import UnlockPdfOptions from './UnlockPdfOptions'
 import IdCardLayoutOptions from './IdCardLayoutOptions'
+import WatermarkPdfOptions from './WatermarkPdfOptions'
+import RotatePdfOptions from './RotatePdfOptions'
+import OcrPdfOptions from './OcrPdfOptions'
 
 interface OptionsSlotProps {
   options: ToolOptionsState
@@ -30,6 +33,12 @@ export function renderToolOptions(
       return <ProtectPdfOptions {...props} />
     case 'unlock-pdf':
       return <UnlockPdfOptions {...props} />
+    case 'watermark-pdf':
+      return <WatermarkPdfOptions {...props} />
+    case 'rotate-pdf':
+      return <RotatePdfOptions {...props} />
+    case 'ocr-pdf':
+      return <OcrPdfOptions {...props} />
     default:
       if (ID_CARD_TOOLS.includes(toolId)) return <IdCardLayoutOptions {...props} />
       return null

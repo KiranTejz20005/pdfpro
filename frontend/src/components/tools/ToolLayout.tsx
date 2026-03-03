@@ -17,8 +17,9 @@ interface ToolLayoutProps {
   resultTitle?: string
   onReset: () => void
   errorMessage?: string | null
-  /** For PDF Reader: custom result content instead of download */
   resultSlot?: React.ReactNode
+  resultBlob?: Blob | null
+  previewBlob?: Blob | null
 }
 
 function formatsText(accept: string, _multiple: boolean): string {
@@ -43,13 +44,22 @@ export default function ToolLayout({
   onReset,
   errorMessage,
   resultSlot,
+  resultBlob,
+  previewBlob,
 }: ToolLayoutProps) {
   const canSubmit = files.length > 0 && status !== 'loading'
   const formats = formatsText(config.accept, config.multiple)
 
+  const getPreviewType = (): 'pdf' | 'image' | 'none' => {
+    if (!resultBlob && !previewBlob) return 'none'
+    if (config.category === 'pdf' || config.category === 'convert' || config.id.includes('pdf')) return 'pdf'
+    if (config.category === 'image' && !resultFilename?.endsWith('.zip')) return 'image'
+    return 'none'
+  }
+
   return (
     <div className="container">
-      <div className="card" style={{ maxWidth: 720, margin: '0 auto', boxShadow: 'var(--shadow-lg)' }}>
+      <div className="card" style={{ maxWidth: 1400, margin: '0 auto', boxShadow: 'var(--shadow-lg)' }}>
         <div style={{ marginBottom: 28 }}>
           <h1 style={{ fontSize: '1.875rem', marginBottom: 10, fontWeight: 700, color: 'var(--color-text)', letterSpacing: '-0.01em' }}>{config.title}</h1>
           <p className="card-description" style={{ marginBottom: 0, fontSize: '0.95rem', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
@@ -92,6 +102,19 @@ export default function ToolLayout({
 
         <StatusArea show={status === 'loading'} message={statusMessage} />
 
+        {status === 'idle' && previewBlob && (
+          <div style={{ marginTop: 24, border: '2px solid var(--accent)', borderRadius: '6px', overflow: 'hidden' }}>
+            <div style={{ padding: 12, background: 'var(--accent)', color: '#FFFFFF', fontSize: '0.875rem', fontWeight: 600 }}>
+              Live Preview
+            </div>
+            <iframe
+              src={URL.createObjectURL(previewBlob)}
+              style={{ width: '100%', height: '500px', border: 'none' }}
+              title="Live Preview"
+            />
+          </div>
+        )}
+
         {status === 'success' && (resultSlot || resultDownloadUrl) && (
           <ResultBox
             title={resultTitle}
@@ -99,6 +122,8 @@ export default function ToolLayout({
             downloadFilename={resultFilename}
             onReset={onReset}
             resetLabel="Process another"
+            previewBlob={resultBlob ?? undefined}
+            previewType={getPreviewType()}
           >
             {resultSlot}
           </ResultBox>

@@ -19,9 +19,9 @@ export default function Card({
 }: CardProps) {
   const classes = ['card', primary ? 'card-primary' : '', className].filter(Boolean).join(' ')
   return (
-    <div className={classes} {...props}>
-      {title && <h3 className="card-title">{title}</h3>}
-      {description && <p className="card-description">{description}</p>}
+    <div className={classes} style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: '6px' }} {...props}>
+      {title && <h3 className="card-title" style={{ color: 'var(--text)' }}>{title}</h3>}
+      {description && <p className="card-description" style={{ color: 'var(--text-muted)' }}>{description}</p>}
       {children}
       {action && <div style={{ marginTop: '16px' }}>{action}</div>}
     </div>

@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from config import settings
-from routers import pdf_convert, pdf_tools, card_tools
+from routers import pdf_convert, pdf_tools, card_tools, image_tools
 
 app = FastAPI(title="Cyber Cafe PDF & Image SaaS")
 
@@ -21,6 +21,7 @@ app.add_middleware(
 app.include_router(pdf_convert.router, prefix="/api/convert")
 app.include_router(pdf_tools.router, prefix="/api/pdf", tags=["PDF Tools"])
 app.include_router(card_tools.router, prefix="/api/cards", tags=["ID Card Tools"])
+app.include_router(image_tools.router, prefix="/api/image", tags=["Image Tools"])
 
 @app.on_event("startup")
 async def startup_event():
